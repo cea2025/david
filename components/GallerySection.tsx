@@ -35,7 +35,7 @@ const galleryItems = [
     type: 'construction',
     title: 'תהליך הרכבה',
     description: 'הרכבת השלד באתר הבנייה',
-    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=400',
   },
   {
     type: 'construction',
