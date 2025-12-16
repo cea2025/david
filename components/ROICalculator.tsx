@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   TrendingUp,
   TrendingDown,
@@ -126,11 +126,32 @@ const realisticBreakeven = 24 + Math.ceil((INITIAL_INVESTMENT + Math.abs(realist
 
 export function ROICalculator() {
   const [investmentAmount, setInvestmentAmount] = useState(INITIAL_INVESTMENT)
+  const [mounted, setMounted] = useState(false)
   const chartData = generateChartData()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // חישוב תשואה על השקעה מותאמת אישית
   const customOptimisticReturn = (investmentAmount / INITIAL_INVESTMENT) * optimisticFinalValue
   const customRealisticReturn = (investmentAmount / INITIAL_INVESTMENT) * realisticFinalValue
+
+  if (!mounted) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-48 mx-auto mb-4"></div>
+              <div className="h-12 bg-gray-200 rounded w-96 mx-auto mb-4"></div>
+              <div className="h-6 bg-gray-200 rounded w-64 mx-auto"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="py-20 bg-gradient-to-br from-indigo-50 via-white to-purple-50">

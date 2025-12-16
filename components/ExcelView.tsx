@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FileSpreadsheet, Download, ZoomIn, ZoomOut, Table } from 'lucide-react'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
@@ -47,13 +47,30 @@ type SheetType = 'costs' | 'revenue' | 'investment'
 export function ExcelView() {
   const [activeSheet, setActiveSheet] = useState<SheetType>('costs')
   const [zoom, setZoom] = useState(100)
+  const [mounted, setMounted] = useState(false)
 
-  const getColumnLetter = (index: number) => {
-    return String.fromCharCode(65 + index)
-  }
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const totalUnitCost = unitCostData.reduce((sum, row) => sum + parseInt(row.total.replace(',', '')), 0)
   const totalInvestment = investmentData.reduce((sum, row) => sum + parseInt(row.price.replace(/,/g, '')), 0)
+
+  if (!mounted) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-slate-100 via-white to-slate-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-48 mx-auto mb-4"></div>
+              <div className="h-12 bg-gray-200 rounded w-96 mx-auto mb-4"></div>
+              <div className="h-64 bg-gray-200 rounded max-w-4xl mx-auto"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="py-20 bg-gradient-to-br from-slate-100 via-white to-slate-50">
