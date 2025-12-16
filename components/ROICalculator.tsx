@@ -4,12 +4,14 @@ import React, { useState, useEffect } from 'react'
 import {
   TrendingUp,
   TrendingDown,
+  Minus,
   Calculator,
   PiggyBank,
   Target,
   Clock,
   Percent,
   ArrowRight,
+  AlertTriangle,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card'
 import { Badge } from './ui/badge'
@@ -31,20 +33,43 @@ const INITIAL_INVESTMENT = 3000000 // השקעה ראשונית
 // תרחיש אופטימי (תכנית עסקית) - נתוני המייסדים
 const optimisticScenario = {
   name: 'אופטימי',
+  emoji: '📈',
   color: '#22c55e',
-  yearlyProfits: [4351800, 14635500, 22543200], // לפי נתוני המייסדים
+  bgColor: 'bg-green-50',
+  borderColor: 'border-green-400',
+  headerBg: 'from-green-100 to-green-200',
+  description: 'לפי התכנית העסקית',
+  yearlyProfits: [4351800, 14635500, 22543200],
   totalProfit: 41530500,
 }
 
-// תרחיש פסימי (קטסטרופה מבוקרת)
-// הנחות: 50% מכירות, +30% עלות גלם, +25% עלות עבודה
-// מבוסס על ה-Stress Test
+// תרחיש ריאליסטי (אמצעי) - עיכובים ועלויות גבוהות יותר
 const realisticScenario = {
-  name: 'פסימי',
-  color: '#ef4444',
-  yearlyProfits: [-4200000, -1800000, 1500000], // הפסדים כבדים ב-2 שנים ראשונות
-  totalProfit: -4500000, // הפסד מצטבר!
+  name: 'ריאליסטי',
+  emoji: '🔍',
+  color: '#f59e0b',
+  bgColor: 'bg-amber-50',
+  borderColor: 'border-amber-400',
+  headerBg: 'from-amber-100 to-amber-200',
+  description: '20% עיכוב, +15% עלויות',
+  yearlyProfits: [-2500000, 3200000, 8500000],
+  totalProfit: 9200000,
 }
+
+// תרחיש פסימי מאוד (קטסטרופה)
+const pessimisticScenario = {
+  name: 'פסימי מאוד',
+  emoji: '💀',
+  color: '#dc2626',
+  bgColor: 'bg-red-50',
+  borderColor: 'border-red-500',
+  headerBg: 'from-red-100 to-red-200',
+  description: '50% מכירות, +30% עלויות',
+  yearlyProfits: [-4200000, -1800000, 1500000],
+  totalProfit: -4500000,
+}
+
+const scenarios = [optimisticScenario, realisticScenario, pessimisticScenario]
 
 // חישוב תשואה שנתית ממוצעת (CAGR)
 function calculateCAGR(initialValue: number, finalValue: number, years: number): number {
@@ -52,80 +77,76 @@ function calculateCAGR(initialValue: number, finalValue: number, years: number):
   return (Math.pow(finalValue / initialValue, 1 / years) - 1) * 100
 }
 
-// חישוב ריבית דריבית
-function calculateCompoundGrowth(principal: number, rate: number, years: number): number[] {
-  const values = [principal]
-  for (let i = 1; i <= years; i++) {
-    values.push(values[i - 1] * (1 + rate / 100))
+// חישוב נקודת איזון בחודשים
+function calculateBreakeven(scenario: typeof optimisticScenario): number | null {
+  let cumulative = 0
+  for (let year = 0; year < scenario.yearlyProfits.length; year++) {
+    const monthlyProfit = scenario.yearlyProfits[year] / 12
+    for (let month = 0; month < 12; month++) {
+      cumulative += monthlyProfit
+      if (cumulative >= INITIAL_INVESTMENT) {
+        return year * 12 + month + 1
+      }
+    }
   }
-  return values
+  return null // לא מושגת
 }
 
 // יצירת נתונים לגרף
 function generateChartData() {
   const data = []
   
-  // אופטימי - חישוב ערך מצטבר
   let optCumulative = INITIAL_INVESTMENT
   let realCumulative = INITIAL_INVESTMENT
+  let pessCumulative = INITIAL_INVESTMENT
   
   data.push({
     year: 'השקעה',
     optimistic: INITIAL_INVESTMENT,
     realistic: INITIAL_INVESTMENT,
+    pessimistic: INITIAL_INVESTMENT,
     breakeven: INITIAL_INVESTMENT,
   })
   
   for (let i = 0; i < 3; i++) {
     optCumulative += optimisticScenario.yearlyProfits[i]
     realCumulative += realisticScenario.yearlyProfits[i]
+    pessCumulative += pessimisticScenario.yearlyProfits[i]
     
     data.push({
       year: `שנה ${i + 1}`,
       optimistic: optCumulative,
       realistic: realCumulative,
+      pessimistic: pessCumulative,
       breakeven: INITIAL_INVESTMENT,
     })
   }
   
-  // שנים 4-5 עם הנחת המשך צמיחה
-  const optGrowthRate = 1.15 // 15% צמיחה שנתית
-  const realGrowthRate = 1.10 // 10% צמיחה שנתית
-  
+  // שנים 4-5 עם הנחת המשך
+  const rates = [1.15, 1.10, 1.05]
   let optLastProfit = optimisticScenario.yearlyProfits[2]
   let realLastProfit = realisticScenario.yearlyProfits[2]
+  let pessLastProfit = Math.max(pessimisticScenario.yearlyProfits[2], 500000)
   
   for (let i = 4; i <= 5; i++) {
-    optLastProfit *= optGrowthRate
-    realLastProfit *= realGrowthRate
+    optLastProfit *= rates[0]
+    realLastProfit *= rates[1]
+    pessLastProfit *= rates[2]
     optCumulative += optLastProfit
     realCumulative += realLastProfit
+    pessCumulative += pessLastProfit
     
     data.push({
       year: `שנה ${i}`,
       optimistic: Math.round(optCumulative),
       realistic: Math.round(realCumulative),
+      pessimistic: Math.round(pessCumulative),
       breakeven: INITIAL_INVESTMENT,
     })
   }
   
   return data
 }
-
-// חישוב ROI שנתי
-const optimisticFinalValue = INITIAL_INVESTMENT + optimisticScenario.totalProfit
-const realisticFinalValue = INITIAL_INVESTMENT + realisticScenario.totalProfit
-
-const optimisticCAGR = calculateCAGR(INITIAL_INVESTMENT, optimisticFinalValue, 3)
-const realisticCAGR = calculateCAGR(INITIAL_INVESTMENT, realisticFinalValue, 3)
-
-const optimisticTotalROI = ((optimisticFinalValue - INITIAL_INVESTMENT) / INITIAL_INVESTMENT) * 100
-const realisticTotalROI = ((realisticFinalValue - INITIAL_INVESTMENT) / INITIAL_INVESTMENT) * 100
-
-// נקודת איזון (בחודשים)
-const optimisticBreakeven = Math.ceil(INITIAL_INVESTMENT / (optimisticScenario.yearlyProfits[0] / 12))
-// פסימי: אם יש הפסד מתמשך, אין נקודת איזון בטווח הנראה
-const realisticBreakeven = realisticScenario.totalProfit < 0 ? -1 : 999 // סימן להפסד
 
 export function ROICalculator() {
   const [investmentAmount, setInvestmentAmount] = useState(INITIAL_INVESTMENT)
@@ -135,10 +156,6 @@ export function ROICalculator() {
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  // חישוב תשואה על השקעה מותאמת אישית
-  const customOptimisticReturn = (investmentAmount / INITIAL_INVESTMENT) * optimisticFinalValue
-  const customRealisticReturn = (investmentAmount / INITIAL_INVESTMENT) * realisticFinalValue
 
   if (!mounted) {
     return (
@@ -169,189 +186,116 @@ export function ROICalculator() {
             ניתוח תשואה על ההשקעה (ROI)
           </h2>
           <p className="text-lg text-navy-600 max-w-2xl mx-auto">
-            השוואת תשואה שנתית בריבית דריבית - תרחיש אופטימי מול ריאליסטי
+            השוואת תשואה בשלושה תרחישים: אופטימי, ריאליסטי ופסימי
           </p>
         </div>
 
-        {/* ROI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
-          {/* Optimistic ROI */}
-          <Card variant="elevated" className="border-2 border-profit-light overflow-hidden">
-            <CardHeader className="bg-gradient-to-l from-profit-light/20 to-profit/10">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-profit-dark flex items-center gap-2">
-                    <TrendingUp className="w-6 h-6" />
-                    תרחיש אופטימי
-                  </CardTitle>
-                  <CardDescription className="text-profit">
-                    לפי התכנית העסקית
-                  </CardDescription>
-                </div>
-                <Badge variant="profit" className="text-lg px-3 py-1">
-                  📈
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="p-6 space-y-6">
-              {/* Annual ROI */}
-              <div className="text-center p-4 rounded-xl bg-profit-light/10">
-                <div className="text-sm text-navy-600 mb-1">תשואה שנתית ממוצעת (CAGR)</div>
-                <div className="text-5xl font-black text-profit">
-                  {optimisticCAGR.toFixed(1)}%
-                </div>
-                <div className="text-xs text-navy-500 mt-1">בריבית דריבית</div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Total ROI */}
-                <div className="p-4 rounded-xl bg-white border border-profit-light/30">
-                  <div className="flex items-center gap-2 text-navy-500 text-sm mb-1">
-                    <Percent className="w-4 h-4" />
-                    תשואה כוללת (3 שנים)
+        {/* Three ROI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12">
+          {scenarios.map((scenario) => {
+            const finalValue = INITIAL_INVESTMENT + scenario.totalProfit
+            const cagr = calculateCAGR(INITIAL_INVESTMENT, finalValue, 3)
+            const totalROI = ((finalValue - INITIAL_INVESTMENT) / INITIAL_INVESTMENT) * 100
+            const breakeven = calculateBreakeven(scenario)
+            const isLoss = scenario.totalProfit < 0
+            
+            return (
+              <Card 
+                key={scenario.name} 
+                variant="elevated" 
+                className={`border-2 ${scenario.borderColor} overflow-hidden`}
+              >
+                <CardHeader className={`bg-gradient-to-l ${scenario.headerBg}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2" style={{ color: scenario.color }}>
+                        {scenario.name === 'אופטימי' ? <TrendingUp className="w-5 h-5" /> : 
+                         scenario.name === 'ריאליסטי' ? <Minus className="w-5 h-5" /> : 
+                         <TrendingDown className="w-5 h-5" />}
+                        תרחיש {scenario.name}
+                      </CardTitle>
+                      <CardDescription style={{ color: scenario.color }}>
+                        {scenario.description}
+                      </CardDescription>
+                    </div>
+                    <span className="text-2xl">{scenario.emoji}</span>
                   </div>
-                  <div className="text-2xl font-bold text-profit-dark">
-                    {optimisticTotalROI.toFixed(0)}%
+                </CardHeader>
+                <CardContent className="p-4 space-y-4">
+                  {/* CAGR */}
+                  <div className={`text-center p-3 rounded-xl ${scenario.bgColor}`}>
+                    <div className="text-xs text-navy-600 mb-1">תשואה שנתית (CAGR)</div>
+                    <div className="text-3xl font-black" style={{ color: scenario.color }}>
+                      {cagr > -100 ? `${cagr.toFixed(1)}%` : 'N/A'}
+                    </div>
                   </div>
-                </div>
 
-                {/* Break-even */}
-                <div className="p-4 rounded-xl bg-white border border-profit-light/30">
-                  <div className="flex items-center gap-2 text-navy-500 text-sm mb-1">
-                    <Clock className="w-4 h-4" />
-                    נקודת איזון
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Total ROI */}
+                    <div className={`p-2 rounded-lg ${scenario.bgColor} text-center`}>
+                      <div className="text-xs text-navy-500">תשואה כוללת</div>
+                      <div className="font-bold" style={{ color: scenario.color }}>
+                        {totalROI.toFixed(0)}%
+                      </div>
+                    </div>
+
+                    {/* Break-even */}
+                    <div className={`p-2 rounded-lg ${scenario.bgColor} text-center`}>
+                      <div className="text-xs text-navy-500">נקודת איזון</div>
+                      <div className="font-bold" style={{ color: scenario.color }}>
+                        {breakeven ? `${breakeven} חודשים` : '❌'}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-2xl font-bold text-profit-dark">
-                    {optimisticBreakeven} חודשים
+
+                  {/* Yearly breakdown */}
+                  <div className="space-y-1">
+                    <div className="text-xs font-semibold text-navy-600">פירוט שנתי:</div>
+                    {scenario.yearlyProfits.map((profit, index) => (
+                      <div key={index} className="flex justify-between items-center p-1.5 rounded bg-gray-50 text-sm">
+                        <span className="text-navy-600">שנה {index + 1}</span>
+                        <span className={`font-mono font-bold ${profit < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                          {profit < 0 ? '' : '+'}{(profit / 1000000).toFixed(1)}M
+                        </span>
+                      </div>
+                    ))}
+                    <div className={`flex justify-between items-center p-2 rounded font-bold ${
+                      isLoss ? 'bg-red-100' : 'bg-green-100'
+                    }`}>
+                      <span className="text-navy-800 text-sm">סה״כ</span>
+                      <span className={`font-mono ${isLoss ? 'text-red-600' : 'text-green-600'}`}>
+                        {isLoss ? '' : '+'}{(scenario.totalProfit / 1000000).toFixed(1)}M
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Yearly breakdown */}
-              <div className="space-y-2">
-                <div className="text-sm font-semibold text-navy-700">פירוט רווח שנתי:</div>
-                {optimisticScenario.yearlyProfits.map((profit, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 rounded bg-gray-50">
-                    <span className="text-navy-600">שנה {index + 1}</span>
-                    <span className="font-mono font-bold text-profit-dark">
-                      +{profit.toLocaleString()} ₪
-                    </span>
+                  {/* Final Value */}
+                  <div 
+                    className="p-3 rounded-xl text-white text-center"
+                    style={{ backgroundColor: scenario.color }}
+                  >
+                    <div className="text-xs opacity-90">ערך אחרי 3 שנים</div>
+                    <div className="text-xl font-black">
+                      {(finalValue / 1000000).toFixed(1)}M ₪
+                    </div>
+                    <div className="text-xs opacity-75">
+                      {isLoss ? `הפסד ${Math.abs(totalROI).toFixed(0)}%` : `רווח ${totalROI.toFixed(0)}%`}
+                    </div>
                   </div>
-                ))}
-                <div className="flex justify-between items-center p-3 rounded bg-profit-light/20 font-bold">
-                  <span className="text-navy-800">סה״כ רווח</span>
-                  <span className="font-mono text-profit-dark text-lg">
-                    {optimisticScenario.totalProfit.toLocaleString()} ₪
-                  </span>
-                </div>
-              </div>
 
-              {/* Final Value */}
-              <div className="p-4 rounded-xl bg-profit text-white text-center">
-                <div className="text-sm opacity-90">ערך השקעה אחרי 3 שנים</div>
-                <div className="text-3xl font-black">
-                  {optimisticFinalValue.toLocaleString()} ₪
-                </div>
-                <div className="text-sm opacity-75">
-                  (על השקעה של {INITIAL_INVESTMENT.toLocaleString()} ₪)
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Pessimistic ROI - תרחיש הפסד */}
-          <Card variant="elevated" className="border-2 border-red-500 overflow-hidden">
-            <CardHeader className="bg-gradient-to-l from-red-100 to-red-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-red-700 flex items-center gap-2">
-                    <TrendingDown className="w-6 h-6" />
-                    תרחיש פסימי (הפסד)
-                  </CardTitle>
-                  <CardDescription className="text-red-600">
-                    50% מכירות, +30% עלויות גלם, +25% עבודה
-                  </CardDescription>
-                </div>
-                <Badge variant="risk" className="text-lg px-3 py-1 bg-red-600">
-                  💀
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="p-6 space-y-6">
-              {/* Annual ROI - הפסד */}
-              <div className="text-center p-4 rounded-xl bg-red-100 border-2 border-red-300">
-                <div className="text-sm text-red-700 mb-1">תשואה שנתית ממוצעת (CAGR)</div>
-                <div className="text-5xl font-black text-red-600">
-                  {realisticCAGR.toFixed(1)}%
-                </div>
-                <div className="text-xs text-red-500 mt-1 font-bold">⚠️ תשואה שלילית - הפסד!</div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Total ROI */}
-                <div className="p-4 rounded-xl bg-red-50 border border-red-300">
-                  <div className="flex items-center gap-2 text-red-600 text-sm mb-1">
-                    <Percent className="w-4 h-4" />
-                    תשואה כוללת (3 שנים)
-                  </div>
-                  <div className="text-2xl font-bold text-red-600">
-                    {realisticTotalROI.toFixed(0)}%
-                  </div>
-                </div>
-
-                {/* Break-even */}
-                <div className="p-4 rounded-xl bg-red-50 border border-red-300">
-                  <div className="flex items-center gap-2 text-red-600 text-sm mb-1">
-                    <Clock className="w-4 h-4" />
-                    נקודת איזון
-                  </div>
-                  <div className="text-xl font-bold text-red-600">
-                    {realisticBreakeven < 0 ? '❌ לא מושגת' : `${realisticBreakeven}+ חודשים`}
-                  </div>
-                </div>
-              </div>
-
-              {/* Yearly breakdown */}
-              <div className="space-y-2">
-                <div className="text-sm font-semibold text-red-700">פירוט הפסד שנתי:</div>
-                {realisticScenario.yearlyProfits.map((profit, index) => (
-                  <div key={index} className={`flex justify-between items-center p-2 rounded ${profit < 0 ? 'bg-red-100' : 'bg-green-50'}`}>
-                    <span className="text-navy-600">שנה {index + 1}</span>
-                    <span className={`font-mono font-bold ${profit < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                      {profit < 0 ? '' : '+'}{profit.toLocaleString()} ₪
-                    </span>
-                  </div>
-                ))}
-                <div className="flex justify-between items-center p-3 rounded bg-red-200 font-bold border border-red-400">
-                  <span className="text-red-800">סה״כ הפסד מצטבר</span>
-                  <span className="font-mono text-red-700 text-lg">
-                    {realisticScenario.totalProfit.toLocaleString()} ₪
-                  </span>
-                </div>
-              </div>
-
-              {/* Final Value - Loss */}
-              <div className="p-4 rounded-xl bg-red-600 text-white text-center">
-                <div className="text-sm opacity-90">ערך השקעה אחרי 3 שנים</div>
-                <div className="text-3xl font-black">
-                  {realisticFinalValue.toLocaleString()} ₪
-                </div>
-                <div className="text-sm opacity-90 mt-1">
-                  💸 הפסד של {Math.abs(realisticFinalValue - INITIAL_INVESTMENT).toLocaleString()} ₪
-                </div>
-                <div className="text-xs opacity-75">
-                  (מתוך השקעה של {INITIAL_INVESTMENT.toLocaleString()} ₪)
-                </div>
-              </div>
-
-              {/* Warning */}
-              <div className="p-3 rounded-lg bg-red-900/10 border border-red-400 text-center">
-                <p className="text-sm text-red-700 font-medium">
-                  ⚠️ בתרחיש זה המשקיע מאבד {((1 - realisticFinalValue/INITIAL_INVESTMENT) * 100).toFixed(0)}% מההשקעה
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+                  {/* Warning for pessimistic */}
+                  {isLoss && (
+                    <div className="p-2 rounded bg-red-100 border border-red-300 text-center">
+                      <p className="text-xs text-red-700 flex items-center justify-center gap-1">
+                        <AlertTriangle className="w-3 h-3" />
+                        המשקיע מאבד {Math.abs(totalROI).toFixed(0)}% מההשקעה
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
 
         {/* Comparison Chart */}
@@ -362,7 +306,7 @@ export function ROICalculator() {
               גרף צמיחת השקעה - 5 שנים
             </CardTitle>
             <CardDescription>
-              השוואת ערך ההשקעה בין שני התרחישים (כולל תחזית שנים 4-5)
+              השוואת ערך ההשקעה בשלושת התרחישים
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -386,32 +330,38 @@ export function ROICalculator() {
                     borderRadius: '12px',
                     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
-                  formatter={(value: number) => [`${value.toLocaleString()} ₪`, '']}
+                  formatter={(value: number) => [`${(value / 1000000).toFixed(1)}M ₪`, '']}
                 />
                 <Legend />
                 <ReferenceLine 
                   y={INITIAL_INVESTMENT} 
-                  stroke="#ef4444" 
+                  stroke="#6b7280" 
                   strokeDasharray="5 5" 
-                  label={{ value: 'נקודת איזון', position: 'right', fill: '#ef4444', fontSize: 12 }}
+                  label={{ value: 'נקודת איזון', position: 'right', fill: '#6b7280', fontSize: 12 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="optimistic"
-                  name="תרחיש אופטימי"
+                  name="אופטימי"
                   stroke="#22c55e"
                   strokeWidth={3}
                   dot={{ fill: '#22c55e', strokeWidth: 2, r: 5 }}
-                  activeDot={{ r: 8, fill: '#16a34a' }}
                 />
                 <Line
                   type="monotone"
                   dataKey="realistic"
-                  name="תרחיש פסימי (הפסד)"
+                  name="ריאליסטי"
+                  stroke="#f59e0b"
+                  strokeWidth={3}
+                  dot={{ fill: '#f59e0b', strokeWidth: 2, r: 5 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="pessimistic"
+                  name="פסימי"
                   stroke="#dc2626"
                   strokeWidth={3}
                   dot={{ fill: '#dc2626', strokeWidth: 2, r: 5 }}
-                  activeDot={{ r: 8, fill: '#b91c1c' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -419,14 +369,14 @@ export function ROICalculator() {
         </Card>
 
         {/* Investment Calculator */}
-        <Card variant="elevated" className="max-w-3xl mx-auto">
+        <Card variant="elevated" className="max-w-4xl mx-auto">
           <CardHeader className="bg-gradient-to-l from-indigo-100 to-purple-100">
             <CardTitle className="flex items-center gap-2 text-indigo-800">
               <PiggyBank className="w-5 h-5" />
               מחשבון השקעה אישי
             </CardTitle>
             <CardDescription className="text-indigo-600">
-              הזן סכום השקעה לחישוב התשואה הצפויה
+              הזן סכום השקעה לחישוב התשואה הצפויה בכל תרחיש
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
@@ -450,43 +400,43 @@ export function ROICalculator() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Optimistic Result */}
-              <div className="p-4 rounded-xl bg-profit-light/10 border border-profit-light">
-                <div className="text-sm text-navy-600 mb-1">תרחיש אופטימי - אחרי 3 שנים</div>
-                <div className="text-2xl font-black text-profit">
-                  {Math.round(customOptimisticReturn).toLocaleString()} ₪
-                </div>
-                <div className="flex items-center gap-1 text-sm text-profit-dark mt-1">
-                  <ArrowRight className="w-4 h-4" />
-                  רווח: {Math.round(customOptimisticReturn - investmentAmount).toLocaleString()} ₪
-                </div>
-              </div>
-
-              {/* Pessimistic Result - Loss */}
-              <div className="p-4 rounded-xl bg-red-50 border border-red-300">
-                <div className="text-sm text-red-700 mb-1">תרחיש פסימי - אחרי 3 שנים</div>
-                <div className="text-2xl font-black text-red-600">
-                  {Math.round(customRealisticReturn).toLocaleString()} ₪
-                </div>
-                <div className="flex items-center gap-1 text-sm text-red-600 mt-1">
-                  <ArrowRight className="w-4 h-4" />
-                  הפסד: {Math.round(customRealisticReturn - investmentAmount).toLocaleString()} ₪
-                </div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {scenarios.map((scenario) => {
+                const multiplier = investmentAmount / INITIAL_INVESTMENT
+                const finalValue = INITIAL_INVESTMENT + scenario.totalProfit
+                const customReturn = multiplier * finalValue
+                const profit = customReturn - investmentAmount
+                const isLoss = profit < 0
+                
+                return (
+                  <div 
+                    key={scenario.name}
+                    className={`p-4 rounded-xl ${scenario.bgColor} border ${scenario.borderColor}`}
+                  >
+                    <div className="text-sm mb-1" style={{ color: scenario.color }}>
+                      {scenario.emoji} {scenario.name}
+                    </div>
+                    <div className="text-xl font-black" style={{ color: scenario.color }}>
+                      {(customReturn / 1000000).toFixed(2)}M ₪
+                    </div>
+                    <div className={`flex items-center gap-1 text-sm mt-1 ${isLoss ? 'text-red-600' : 'text-green-600'}`}>
+                      <ArrowRight className="w-4 h-4" />
+                      {isLoss ? 'הפסד' : 'רווח'}: {(profit / 1000000).toFixed(2)}M ₪
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </CardContent>
         </Card>
 
         {/* Summary Note */}
-        <div className="max-w-3xl mx-auto mt-8 text-center">
+        <div className="max-w-4xl mx-auto mt-8 text-center">
           <p className="text-sm text-navy-500">
-            * חישוב CAGR (Compound Annual Growth Rate) = תשואה שנתית ממוצעת בריבית דריבית.
-            הנוסחה: (ערך סופי / ערך התחלתי)^(1/שנים) - 1
+            * אופטימי: נתוני המייסדים | ריאליסטי: עיכוב 20%, עלויות +15% | פסימי: 50% מכירות, +30% עלויות
           </p>
         </div>
       </div>
     </section>
   )
 }
-
