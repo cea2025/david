@@ -1,26 +1,160 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800&family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy-950: #0a1929;
+  --navy-900: #102a43;
+  --navy-800: #243b53;
+  --navy-700: #334e68;
+  --navy-600: #486581;
+  --navy-500: #627d98;
+  --navy-400: #829ab1;
+  --navy-300: #9fb3c8;
+  --navy-200: #bcccdc;
+  --navy-100: #d9e2ec;
+  --navy-50: #f0f4f8;
+  
+  --profit: #22c55e;
+  --profit-light: #4ade80;
+  --risk: #ef4444;
+  --risk-light: #f87171;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Heebo', system-ui, sans-serif;
+  direction: rtl;
+  background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--navy-100);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--navy-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--navy-500);
+}
+
+/* Optimistic mode styles */
+.optimistic-mode {
+  --mode-accent: var(--profit);
+  --mode-bg: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+/* Pessimistic mode styles */
+.pessimistic-mode {
+  --mode-accent: var(--risk);
+  --mode-bg: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+/* Glassmorphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(16, 42, 67, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-600) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-profit {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-risk {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animation delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Card hover effect */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(16, 42, 67, 0.25);
+}
+
+/* Pulse animation for alerts */
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.7; }
+  100% { transform: scale(0.95); opacity: 1; }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+/* Number counter animation */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.count-up {
+  animation: countUp 0.6s ease-out forwards;
+}
+
+/* Table stripe pattern */
+.table-stripe:nth-child(even) {
+  background-color: rgba(16, 42, 67, 0.03);
+}
+
+/* Toggle switch custom styles */
+.toggle-track {
+  transition: background-color 0.3s ease;
+}
+
+.toggle-thumb {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
