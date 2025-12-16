@@ -7,9 +7,6 @@ import { FinancialTable } from '@/components/FinancialTable'
 import { ExcelView } from '@/components/ExcelView'
 import { ROICalculator } from '@/components/ROICalculator'
 import { SectorOverview } from '@/components/SectorOverview'
-import { GallerySection } from '@/components/GallerySection'
-import { RecommendationsSection } from '@/components/RecommendationsSection'
-import { Footer } from '@/components/Footer'
 
 export default function Home() {
   const financialsRef = useRef<HTMLDivElement>(null)
@@ -51,15 +48,6 @@ export default function Home() {
 
       {/* Macro Sector Overview */}
       <SectorOverview />
-
-      {/* Gallery & Presentation */}
-      <GallerySection />
-
-      {/* Recommendations */}
-      <RecommendationsSection />
-
-      {/* Footer */}
-      <Footer />
     </main>
   )
 }
