@@ -6,16 +6,20 @@ import { cn } from '@/lib/utils'
 interface ToggleProps {
   checked: boolean
   onCheckedChange: (checked: boolean) => void
-  labelLeft?: string
-  labelRight?: string
+  labelOptimistic?: string
+  labelPessimistic?: string
   className?: string
 }
 
 const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
-  ({ checked, onCheckedChange, labelLeft, labelRight, className }, ref) => {
+  ({ checked, onCheckedChange, labelOptimistic, labelPessimistic, className }, ref) => {
     return (
-      <div className={cn('flex items-center gap-4 flex-wrap justify-center', className)}>
-        {labelLeft && (
+      <div 
+        className={cn('flex items-center gap-3 justify-center', className)}
+        dir="ltr"
+      >
+        {/* Optimistic - Left side (in LTR) */}
+        {labelOptimistic && (
           <button
             onClick={() => onCheckedChange(false)}
             className={cn(
@@ -25,9 +29,11 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
                 : 'text-navy-500 hover:text-navy-700 hover:bg-navy-100'
             )}
           >
-            {labelLeft}
+            {labelOptimistic}
           </button>
         )}
+        
+        {/* Toggle Switch */}
         <button
           ref={ref}
           role="switch"
@@ -44,11 +50,13 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
           <span
             className={cn(
               'inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300',
-              checked ? 'translate-x-2' : 'translate-x-8'
+              checked ? 'translate-x-8' : 'translate-x-2'
             )}
           />
         </button>
-        {labelRight && (
+        
+        {/* Pessimistic - Right side (in LTR) */}
+        {labelPessimistic && (
           <button
             onClick={() => onCheckedChange(true)}
             className={cn(
@@ -58,7 +66,7 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
                 : 'text-navy-500 hover:text-navy-700 hover:bg-navy-100'
             )}
           >
-            {labelRight}
+            {labelPessimistic}
           </button>
         )}
       </div>
