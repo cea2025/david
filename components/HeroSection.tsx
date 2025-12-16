@@ -3,7 +3,6 @@
 import React from 'react'
 import { Building2, Users, Zap, TrendingUp, ArrowDown, Factory } from 'lucide-react'
 import { Button } from './ui/button'
-import { Card, CardContent } from './ui/card'
 
 const stats = [
   {
@@ -113,28 +112,26 @@ export function HeroSection({ onViewFinancials, onAnalyzeRisks }: HeroSectionPro
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {stats.map((stat, index) => (
-            <Card
+            <div
               key={stat.label}
-              variant="glass"
-              hover
-              className="animate-scale-in bg-navy-800/80 backdrop-blur-lg border-navy-600/50 hover:bg-navy-700/80"
+              className="animate-scale-in rounded-2xl bg-navy-800 border border-navy-600 hover:bg-navy-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
               style={{ animationDelay: `${(index + 4) * 100}ms` }}
             >
-              <CardContent className="p-6 text-center">
+              <div className="p-6 text-center">
                 <div className={`inline-flex p-3 rounded-xl ${stat.bgColor} mb-4`}>
                   <stat.icon className={`w-6 h-6 ${stat.color}`} />
                 </div>
                 <div className="text-3xl font-black text-white mb-2 count-up">
                   {stat.value}
                 </div>
-                <div className="text-sm font-semibold text-white mb-1">
+                <div className="text-sm font-semibold text-gray-100 mb-1">
                   {stat.label}
                 </div>
-                <div className="text-xs text-navy-200 font-medium">
+                <div className="text-xs text-gray-300 font-medium">
                   {stat.subtext}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
 
