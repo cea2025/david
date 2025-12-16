@@ -11,32 +11,32 @@ const stats = [
     value: '2-3 מיליון',
     label: 'יחידות דיור נדרשות עד 2060',
     subtext: 'ביקוש שוק עצום',
-    color: 'text-navy-700',
-    bgColor: 'bg-navy-50',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-500/20',
   },
   {
     icon: Users,
     value: '87%',
     label: 'מהקבלנים מדווחים על מחסור',
     subtext: 'משבר כוח אדם',
-    color: 'text-risk',
-    bgColor: 'bg-risk-light/10',
+    color: 'text-red-400',
+    bgColor: 'bg-red-500/20',
   },
   {
     icon: Zap,
     value: '50%',
     label: 'בנייה מהירה יותר',
     subtext: 'יתרון טכנולוגי',
-    color: 'text-profit',
-    bgColor: 'bg-profit-light/10',
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-500/20',
   },
   {
     icon: TrendingUp,
     value: '20-25%',
     label: 'חיסכון בעלויות',
     subtext: 'יעילות תפעולית',
-    color: 'text-profit-dark',
-    bgColor: 'bg-profit-light/10',
+    color: 'text-green-400',
+    bgColor: 'bg-green-500/20',
   },
 ]
 
@@ -117,7 +117,7 @@ export function HeroSection({ onViewFinancials, onAnalyzeRisks }: HeroSectionPro
               key={stat.label}
               variant="glass"
               hover
-              className="animate-scale-in bg-white/5 backdrop-blur-lg border-white/10 hover:bg-white/10"
+              className="animate-scale-in bg-navy-800/80 backdrop-blur-lg border-navy-600/50 hover:bg-navy-700/80"
               style={{ animationDelay: `${(index + 4) * 100}ms` }}
             >
               <CardContent className="p-6 text-center">
@@ -127,10 +127,10 @@ export function HeroSection({ onViewFinancials, onAnalyzeRisks }: HeroSectionPro
                 <div className="text-3xl font-black text-white mb-2 count-up">
                   {stat.value}
                 </div>
-                <div className="text-sm font-medium text-navy-200 mb-1">
+                <div className="text-sm font-semibold text-white mb-1">
                   {stat.label}
                 </div>
-                <div className="text-xs text-navy-400">
+                <div className="text-xs text-navy-200 font-medium">
                   {stat.subtext}
                 </div>
               </CardContent>
