@@ -4,6 +4,7 @@ import React, { useRef } from 'react'
 import { HeroSection } from '@/components/HeroSection'
 import { DualDashboard } from '@/components/DualDashboard'
 import { FinancialTable } from '@/components/FinancialTable'
+import { ExcelView } from '@/components/ExcelView'
 import { SectorOverview } from '@/components/SectorOverview'
 import { GallerySection } from '@/components/GallerySection'
 import { RecommendationsSection } from '@/components/RecommendationsSection'
@@ -40,6 +41,9 @@ export default function Home() {
 
       {/* Financial Breakdown Table */}
       <FinancialTable />
+
+      {/* Excel View - Business Plan Data */}
+      <ExcelView />
 
       {/* Macro Sector Overview */}
       <SectorOverview />
