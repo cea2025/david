@@ -14,16 +14,19 @@ interface ToggleProps {
 const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
   ({ checked, onCheckedChange, labelLeft, labelRight, className }, ref) => {
     return (
-      <div className={cn('flex items-center gap-4', className)}>
+      <div className={cn('flex items-center gap-4 flex-wrap justify-center', className)}>
         {labelLeft && (
-          <span
+          <button
+            onClick={() => onCheckedChange(false)}
             className={cn(
-              'text-sm font-semibold transition-colors duration-200',
-              !checked ? 'text-profit-dark' : 'text-navy-400'
+              'text-sm font-bold transition-all duration-200 px-4 py-2 rounded-lg whitespace-nowrap',
+              !checked 
+                ? 'text-white bg-profit shadow-lg' 
+                : 'text-navy-500 hover:text-navy-700 hover:bg-navy-100'
             )}
           >
             {labelLeft}
-          </span>
+          </button>
         )}
         <button
           ref={ref}
@@ -31,7 +34,7 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
           aria-checked={checked}
           onClick={() => onCheckedChange(!checked)}
           className={cn(
-            'relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300',
+            'relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 flex-shrink-0',
             'focus:outline-none focus:ring-2 focus:ring-offset-2',
             checked
               ? 'bg-risk focus:ring-risk'
@@ -46,14 +49,17 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
           />
         </button>
         {labelRight && (
-          <span
+          <button
+            onClick={() => onCheckedChange(true)}
             className={cn(
-              'text-sm font-semibold transition-colors duration-200',
-              checked ? 'text-risk-dark' : 'text-navy-400'
+              'text-sm font-bold transition-all duration-200 px-4 py-2 rounded-lg whitespace-nowrap',
+              checked 
+                ? 'text-white bg-risk shadow-lg' 
+                : 'text-navy-500 hover:text-navy-700 hover:bg-navy-100'
             )}
           >
             {labelRight}
-          </span>
+          </button>
         )}
       </div>
     )

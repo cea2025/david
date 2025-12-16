@@ -164,12 +164,12 @@ export function DualDashboard({ id }: DualDashboardProps) {
 
           {/* Toggle Switch */}
           <div className="flex justify-center">
-            <div className="inline-flex items-center gap-6 p-4 rounded-2xl bg-white shadow-xl">
+            <div className="inline-flex items-center gap-4 p-4 rounded-2xl bg-white shadow-xl">
               <Toggle
                 checked={isPessimistic}
                 onCheckedChange={setIsPessimistic}
-                labelLeft="📈 תחזית היזם"
-                labelRight="🔍 סקירת האנליסט"
+                labelLeft="📈 אופטימי"
+                labelRight="🔍 ריאליסטי"
               />
             </div>
           </div>
