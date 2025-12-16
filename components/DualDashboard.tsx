@@ -44,51 +44,52 @@ const realisticData = [
 
 const optimisticKPIs = [
   {
-    label: 'הכנסה ברוטו שנה 3',
-    value: 44100000,
-    icon: DollarSign,
+    label: 'רווח נקי שנה 3',
+    value: 22543200,
+    icon: TrendingUp,
     color: 'text-profit',
     bgColor: 'bg-profit-light/20',
   },
   {
-    label: 'רווח נקי שנה 3',
-    value: 22543200,
-    icon: TrendingUp,
+    label: 'שיעור רווחיות',
+    value: 51,
+    suffix: '%',
+    icon: DollarSign,
     color: 'text-profit-dark',
     bgColor: 'bg-profit-light/20',
   },
   {
-    label: 'עלות למ"ר (חומרי גלם)',
-    value: 340,
+    label: 'עלות ליחידה (תכנית)',
+    value: 18360,
     suffix: ' ₪',
     icon: Factory,
-    color: 'text-navy-600',
-    bgColor: 'bg-navy-100',
+    color: 'text-profit',
+    bgColor: 'bg-profit-light/20',
   },
   {
-    label: 'תפוקה יומית',
-    value: 150,
-    suffix: ' מ"ר/יום',
-    icon: Calendar,
-    color: 'text-navy-600',
-    bgColor: 'bg-navy-100',
+    label: 'נקודת איזון',
+    value: '6 חודשים',
+    icon: Target,
+    color: 'text-profit-dark',
+    bgColor: 'bg-profit-light/20',
   },
 ]
 
 const realisticKPIs = [
   {
-    label: 'הכנסה ברוטו שנה 3',
-    value: 44100000,
-    icon: DollarSign,
-    color: 'text-navy-600',
-    bgColor: 'bg-navy-100',
-  },
-  {
     label: 'רווח נקי מתוקן שנה 3',
     value: 8500000,
     icon: TrendingDown,
-    color: 'text-risk',
-    bgColor: 'bg-risk-light/20',
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-100',
+  },
+  {
+    label: 'שיעור רווחיות',
+    value: 19,
+    suffix: '%',
+    icon: DollarSign,
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-100',
   },
   {
     label: 'עלות יחידה אמיתית',
@@ -100,10 +101,10 @@ const realisticKPIs = [
   },
   {
     label: 'נקודת איזון',
-    value: 'שנה 2+',
+    value: '~30 חודשים',
     icon: Target,
-    color: 'text-amber-600',
-    bgColor: 'bg-amber-100',
+    color: 'text-risk',
+    bgColor: 'bg-risk-light/20',
   },
 ]
 
