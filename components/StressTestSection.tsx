@@ -508,27 +508,6 @@ export function StressTestSection() {
           </div>
         </div>
       </div>
-
-      {/* Custom Slider Styles */}
-      <style jsx>{`
-        input[type="range"]::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          cursor: pointer;
-        }
-        .slider-red::-webkit-slider-thumb {
-          background: #ef4444;
-        }
-        .slider-orange::-webkit-slider-thumb {
-          background: #f97316;
-        }
-        .slider-purple::-webkit-slider-thumb {
-          background: #a855f7;
-        }
-      `}</style>
     </section>
   )
 }
