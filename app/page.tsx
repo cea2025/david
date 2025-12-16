@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/HeroSection'
 import { DualDashboard } from '@/components/DualDashboard'
 import { FinancialTable } from '@/components/FinancialTable'
 import { ExcelView } from '@/components/ExcelView'
+import { ROICalculator } from '@/components/ROICalculator'
 import { SectorOverview } from '@/components/SectorOverview'
 import { GallerySection } from '@/components/GallerySection'
 import { RecommendationsSection } from '@/components/RecommendationsSection'
@@ -44,6 +45,9 @@ export default function Home() {
 
       {/* Excel View - Business Plan Data */}
       <ExcelView />
+
+      {/* ROI Calculator */}
+      <ROICalculator />
 
       {/* Macro Sector Overview */}
       <SectorOverview />
