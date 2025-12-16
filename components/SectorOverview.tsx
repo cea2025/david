@@ -165,10 +165,14 @@ export function SectorOverview() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <div className="aspect-video bg-gradient-to-br from-navy-100 to-navy-200 rounded-xl flex items-center justify-center mb-4">
-                    <div className="text-center">
-                      <Factory className="w-16 h-16 text-navy-400 mx-auto mb-2" />
-                      <p className="text-navy-500 font-medium">תמונת מכונה</p>
+                  <div className="aspect-video relative rounded-xl overflow-hidden mb-4 group">
+                    <img 
+                      src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800" 
+                      alt="מכונת ייצור LGS" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 to-transparent flex items-end p-4">
+                      <p className="text-white font-medium">Howick FRAMA 3200</p>
                     </div>
                   </div>
                   <div className="space-y-3">

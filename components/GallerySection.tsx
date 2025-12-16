@@ -11,31 +11,37 @@ const galleryItems = [
     type: 'machine',
     title: 'מכונת Howick FRAMA',
     description: 'מכונה אוטומטית לייצור פרופילי LGS',
+    image: 'https://images.unsplash.com/photo-1664448007548-7098a584852d?auto=format&fit=crop&q=80&w=400',
   },
   {
     type: 'machine',
     title: 'קו ייצור מלא',
     description: 'תהליך הייצור האוטומטי במפעל',
+    image: 'https://images.unsplash.com/photo-1565514020176-db7112dc8d67?auto=format&fit=crop&q=80&w=400',
   },
   {
     type: 'house',
     title: 'מבנה LGS מוכן',
     description: 'יחידת דיור מושלמת - 54 מ"ר',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=400',
   },
   {
     type: 'house',
     title: 'פנים המבנה',
     description: 'גימור פנימי איכותי',
+    image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4f9d?auto=format&fit=crop&q=80&w=400',
   },
   {
     type: 'construction',
     title: 'תהליך הרכבה',
     description: 'הרכבת השלד באתר הבנייה',
+    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=400',
   },
   {
     type: 'construction',
     title: 'שלד LGS',
     description: 'מבנה הפלדה לפני גימור',
+    image: 'https://images.unsplash.com/photo-1590082726359-3d18e2003c26?auto=format&fit=crop&q=80&w=400',
   },
 ]
 
@@ -148,15 +154,14 @@ export function GallerySection() {
                 key={item.title}
                 className="group relative aspect-square bg-white/5 rounded-xl border border-white/10 overflow-hidden cursor-pointer hover:border-white/30 transition-all"
               >
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                  <ImageIcon className="w-8 h-8 text-white/30 mb-2" />
-                  <p className="text-xs text-white/50 text-center">{item.title}</p>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                  <div>
-                    <p className="text-sm font-medium text-white">{item.title}</p>
-                    <p className="text-xs text-navy-300">{item.description}</p>
-                  </div>
+                <img 
+                  src={item.image} 
+                  alt={item.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-60 group-hover:opacity-100"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-navy-900/20 to-transparent opacity-100 transition-opacity flex flex-col justify-end p-3">
+                  <p className="text-sm font-medium text-white mb-1">{item.title}</p>
+                  <p className="text-xs text-navy-200 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity">{item.description}</p>
                 </div>
               </div>
             ))}
