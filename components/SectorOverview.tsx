@@ -167,7 +167,7 @@ export function SectorOverview() {
                 <CardContent className="p-0">
                   <div className="aspect-video relative rounded-xl overflow-hidden mb-4 group">
                     <img 
-                      src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=800" 
+                      src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800" 
                       alt="מכונת ייצור LGS" 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
