@@ -171,7 +171,7 @@ export function SectorOverview() {
                       alt="מכונת ייצור LGS" 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 to-transparent flex items-end p-4">
+                    <div className="absolute bottom-0 right-0 bg-gradient-to-t from-navy-900/60 to-transparent flex items-end p-4">
                       <p className="text-white font-medium">Howick FRAMA 3200</p>
                     </div>
                   </div>

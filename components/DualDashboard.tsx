@@ -28,18 +28,19 @@ import { Toggle } from './ui/toggle'
 import { Badge } from './ui/badge'
 import { formatCurrency } from '@/lib/utils'
 
-// Optimistic Data (Entrepreneur's Projection)
+// Optimistic Data (Entrepreneur's Projection) - נתוני המייסדים
 const optimisticData = [
-  { year: 'שנה 1', revenue: 14700000, profit: 5800000, units: 100 },
-  { year: 'שנה 2', revenue: 29400000, profit: 13200000, units: 200 },
-  { year: 'שנה 3', revenue: 44100000, profit: 22543200, units: 300 },
+  { year: 'שנה 1', revenue: 16170000, profit: 4351800, sqm: 11550 },
+  { year: 'שנה 2', revenue: 32340000, profit: 14635500, sqm: 23100 },
+  { year: 'שנה 3', revenue: 44100000, profit: 22543200, sqm: 31500 },
 ]
 
-// Realistic Data (Analyst's Review)
+// Realistic Data (Analyst's Review) - ניתוח ביקורתי
+// הנחות: עיכוב 20% בייצור, עלויות גבוהות ב-15%, ללא הוזלת עלויות
 const realisticData = [
-  { year: 'שנה 1', revenue: 14700000, profit: -2500000, units: 100 },
-  { year: 'שנה 2', revenue: 29400000, profit: 3200000, units: 200 },
-  { year: 'שנה 3', revenue: 44100000, profit: 8500000, units: 300 },
+  { year: 'שנה 1', revenue: 12936000, profit: 1081440, sqm: 9240 },
+  { year: 'שנה 2', revenue: 25872000, profit: 8108400, sqm: 18480 },
+  { year: 'שנה 3', revenue: 35280000, profit: 12234600, sqm: 25200 },
 ]
 
 const optimisticKPIs = [
@@ -59,16 +60,16 @@ const optimisticKPIs = [
     bgColor: 'bg-profit-light/20',
   },
   {
-    label: 'עלות ליחידה (תכנית)',
-    value: 18360,
+    label: 'עלות גלם למ"ר',
+    value: 340,
     suffix: ' ₪',
     icon: Factory,
     color: 'text-profit',
     bgColor: 'bg-profit-light/20',
   },
   {
-    label: 'נקודת איזון',
-    value: '6 חודשים',
+    label: 'מ"ר שנתי (שנה 3)',
+    value: '31,500',
     icon: Target,
     color: 'text-profit-dark',
     bgColor: 'bg-profit-light/20',
@@ -78,30 +79,30 @@ const optimisticKPIs = [
 const realisticKPIs = [
   {
     label: 'רווח נקי מתוקן שנה 3',
-    value: 8500000,
+    value: 12234600,
     icon: TrendingDown,
     color: 'text-amber-600',
     bgColor: 'bg-amber-100',
   },
   {
     label: 'שיעור רווחיות',
-    value: 19,
+    value: 35,
     suffix: '%',
     icon: DollarSign,
     color: 'text-amber-600',
     bgColor: 'bg-amber-100',
   },
   {
-    label: 'עלות יחידה אמיתית',
-    value: 45000,
+    label: 'עלות גלם מתוקנת למ"ר',
+    value: 391,
     suffix: ' ₪',
     icon: AlertTriangle,
     color: 'text-risk',
     bgColor: 'bg-risk-light/20',
   },
   {
-    label: 'נקודת איזון',
-    value: '~30 חודשים',
+    label: 'מ"ר שנתי מתוקן',
+    value: '25,200',
     icon: Target,
     color: 'text-risk',
     bgColor: 'bg-risk-light/20',
@@ -110,23 +111,23 @@ const realisticKPIs = [
 
 const criticalErrors = [
   {
-    title: 'שגיאת חישוב בטון',
-    description: 'חושב 540 ₪ במקום 5,400 ₪ (12 מ"ר × 450 ₪)',
-    severity: 'critical',
-  },
-  {
-    title: 'הובלה ומנוף',
-    description: 'תוקן מ-4,000 ₪ ל-15,000 ₪ (מחיר שוק למבנה 30 טון)',
+    title: 'צפי הוזלת עלויות 20%',
+    description: 'ההנחה שעלויות יירדו ב-20% בשנים ב-ג עשויה להיות אופטימית מדי',
     severity: 'high',
   },
   {
-    title: 'ברזל/פלדה',
-    description: 'מחיר אמיתי גבוה פי 2 - חיזוק לא מספיק',
+    title: 'עלות גלם נמוכה',
+    description: '340₪ למ"ר עשויה להיות נמוכה - מחירי שוק נעים סביב 400₪',
     severity: 'medium',
   },
   {
-    title: 'בידוד ואיטום',
-    description: 'תוקן מ-180 ₪ ל-2,000 ₪',
+    title: 'קצב ייצור אגרסיבי',
+    description: 'הגעה ל-150 מ"ר יומי בשנה 3 דורשת גידול מהיר בצוות ותשתיות',
+    severity: 'medium',
+  },
+  {
+    title: 'השקעה ראשונית',
+    description: 'סה"כ 8.15M₪ (הקמה + שנת הקמה) - סיכון תזרימי בשנה הראשונה',
     severity: 'medium',
   },
 ]
@@ -318,15 +319,15 @@ export function DualDashboard({ id }: DualDashboardProps) {
             </CardContent>
           </Card>
 
-          {/* Units & Growth Chart */}
+          {/* Production Chart */}
           <Card variant="elevated" className="p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2">
                 <Factory className="text-navy-600" />
-                ייצור יחידות
+                ייצור מ&quot;ר שנתי
               </CardTitle>
               <CardDescription>
-                תפוקת מפעל - יחידות דיור לשנה
+                תפוקת מפעל - מ&quot;ר לשנה
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
@@ -343,6 +344,7 @@ export function DualDashboard({ id }: DualDashboardProps) {
                     stroke="#627d98"
                     fontSize={12}
                     tickLine={false}
+                    tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
                   />
                   <Tooltip
                     contentStyle={{
@@ -351,12 +353,12 @@ export function DualDashboard({ id }: DualDashboardProps) {
                       borderRadius: '12px',
                       boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                     }}
-                    formatter={(value: number) => [`${value} יחידות`, 'תפוקה']}
+                    formatter={(value: number) => [`${value.toLocaleString()} מ"ר`, 'תפוקה']}
                   />
                   <Line
                     type="monotone"
-                    dataKey="units"
-                    name="יחידות"
+                    dataKey="sqm"
+                    name="מ״ר"
                     stroke="#486581"
                     strokeWidth={4}
                     dot={{ fill: '#486581', strokeWidth: 2, r: 6 }}
@@ -452,12 +454,12 @@ export function DualDashboard({ id }: DualDashboardProps) {
                   <div className="text-sm text-navy-600">רווחיות נקייה צפויה</div>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-profit-light/10">
-                  <div className="text-3xl font-black text-profit mb-2">147K ₪</div>
-                  <div className="text-sm text-navy-600">הכנסה ליחידה</div>
+                  <div className="text-3xl font-black text-profit mb-2">1,400 ₪</div>
+                  <div className="text-sm text-navy-600">מחיר שיווק למ&quot;ר</div>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-profit-light/10">
-                  <div className="text-3xl font-black text-profit mb-2">300</div>
-                  <div className="text-sm text-navy-600">יחידות בשנה 3</div>
+                  <div className="text-3xl font-black text-profit mb-2">31,500</div>
+                  <div className="text-sm text-navy-600">מ&quot;ר בשנה 3</div>
                 </div>
               </div>
             </CardContent>

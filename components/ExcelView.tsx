@@ -5,15 +5,15 @@ import { FileSpreadsheet, Download, ZoomIn, ZoomOut, Table } from 'lucide-react'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
 
-// נתוני התכנית העסקית - עלות ליחידה (54 מ"ר)
+// נתוני התכנית העסקית - עלות גלם ליחידה (54 מ"ר) - הערכה מבוססת 340₪/מ"ר
 const unitCostData = [
   { row: 1, item: 'פרופילי LGS (שלד)', quantity: '54', unit: 'מ"ר', pricePerUnit: '148', total: '8,000', notes: 'פלדה מגולוונת 1.2 מ"מ' },
-  { row: 2, item: 'בטון יציקות', quantity: '12', unit: 'מ"ר', pricePerUnit: '45', total: '540', notes: 'רצפה + יסודות', highlight: 'error' },
+  { row: 2, item: 'בטון יציקות', quantity: '12', unit: 'מ"ר', pricePerUnit: '45', total: '540', notes: 'רצפה + יסודות' },
   { row: 3, item: 'ברזל זיון', quantity: '200', unit: 'ק"ג', pricePerUnit: '10', total: '2,000', notes: 'חיזוק יסודות' },
   { row: 4, item: 'לוחות גבס פנים', quantity: '120', unit: 'מ"ר', pricePerUnit: '35', total: '4,200', notes: 'כולל שלד' },
   { row: 5, item: 'לוחות חוץ (סמנטבורד)', quantity: '80', unit: 'מ"ר', pricePerUnit: '45', total: '3,600', notes: 'עמיד מים' },
   { row: 6, item: 'בידוד תרמי', quantity: '54', unit: 'מ"ר', pricePerUnit: '25', total: '1,350', notes: 'צמר סלעים 10 ס"מ' },
-  { row: 7, item: 'איטום ומסתור', quantity: '1', unit: 'יחידה', pricePerUnit: '180', total: '180', notes: 'ממברנות + טייבק', highlight: 'warning' },
+  { row: 7, item: 'איטום ומסתור', quantity: '1', unit: 'יחידה', pricePerUnit: '180', total: '180', notes: 'ממברנות + טייבק' },
   { row: 8, item: 'חלונות אלומיניום', quantity: '6', unit: 'יחידות', pricePerUnit: '800', total: '4,800', notes: 'תרמי דו-כיווני' },
   { row: 9, item: 'דלתות (כניסה + פנים)', quantity: '5', unit: 'יחידות', pricePerUnit: '600', total: '3,000', notes: '' },
   { row: 10, item: 'אינסטלציה', quantity: '1', unit: 'קומפלט', pricePerUnit: '8,000', total: '8,000', notes: 'כולל חומרים' },
@@ -22,24 +22,29 @@ const unitCostData = [
   { row: 13, item: 'מטבח בסיסי', quantity: '1', unit: 'יחידה', pricePerUnit: '12,000', total: '12,000', notes: 'ארונות + משטח' },
   { row: 14, item: 'סניטריה', quantity: '1', unit: 'קומפלט', pricePerUnit: '5,000', total: '5,000', notes: 'אסלה, כיור, מקלחון' },
   { row: 15, item: 'צבע ושפכטל', quantity: '200', unit: 'מ"ר', pricePerUnit: '15', total: '3,000', notes: 'פנים + חוץ' },
-  { row: 16, item: 'הובלה למגרש', quantity: '1', unit: 'משלוח', pricePerUnit: '4,000', total: '4,000', notes: 'משאית + מנוף', highlight: 'warning' },
+  { row: 16, item: 'הובלה למגרש', quantity: '1', unit: 'משלוח', pricePerUnit: '4,000', total: '4,000', notes: 'משאית + מנוף' },
 ]
 
-// נתוני תחזית הכנסות
+// נתוני תחזית הכנסות - לפי נתוני המייסדים
 const revenueData = [
-  { row: 1, year: 'שנה 1', units: '100', pricePerUnit: '147,000', revenue: '14,700,000', costs: '8,900,000', profit: '5,800,000' },
-  { row: 2, year: 'שנה 2', units: '200', pricePerUnit: '147,000', revenue: '29,400,000', costs: '16,200,000', profit: '13,200,000' },
-  { row: 3, year: 'שנה 3', units: '300', pricePerUnit: '147,000', revenue: '44,100,000', costs: '21,556,800', profit: '22,543,200' },
+  { row: 1, year: 'שנה 1', sqm: '11,550', pricePerSqm: '1,400', revenue: '16,170,000', costs: '11,818,200', profit: '4,351,800' },
+  { row: 2, year: 'שנה 2', sqm: '23,100', pricePerSqm: '1,400', revenue: '32,340,000', costs: '17,704,500', profit: '14,635,500' },
+  { row: 3, year: 'שנה 3', sqm: '31,500', pricePerSqm: '1,400', revenue: '44,100,000', costs: '21,556,800', profit: '22,543,200' },
 ]
 
-// נתוני השקעה ראשונית
+// נתוני השקעה ראשונית - לפי נתוני המייסדים (הקמה)
 const investmentData = [
-  { row: 1, item: 'מכונת Howick FRAMA 3200', quantity: '1', price: '1,200,000', notes: 'ייצור פרופילים' },
-  { row: 2, item: 'מכונת Roll Former', quantity: '1', price: '400,000', notes: 'גימור פרופילים' },
-  { row: 3, item: 'ציוד BIM + תוכנה', quantity: '1', price: '150,000', notes: 'Vertex BD' },
-  { row: 4, item: 'כלי עבודה ומכשור', quantity: '1', price: '100,000', notes: 'מברגות, חותכים' },
-  { row: 5, item: 'הקמת מבנה מפעל', quantity: '500', price: '750,000', notes: 'מ"ר × 1,500 ₪' },
-  { row: 6, item: 'הון חוזר', quantity: '1', price: '400,000', notes: '3 חודשים ראשונים' },
+  { row: 1, item: 'שכירות (13 חודשים)', quantity: '13', price: '910,000', notes: '70,000₪ × 13' },
+  { row: 2, item: 'הכשרת שטח', quantity: '1', price: '160,000', notes: 'מערכות חשמל/אוויר/מידוף' },
+  { row: 3, item: 'ציוד אנלוגי', quantity: '1', price: '540,000', notes: 'מערכות ייצור/חיתוך/כיפוף' },
+  { row: 4, item: 'מיכשור מתקדם', quantity: '1', price: '950,000', notes: 'חריטה/מערכת הרמה/כרסום' },
+  { row: 5, item: 'הקמת משרדים', quantity: '1', price: '250,000', notes: 'כולל תקשורת ואביזור' },
+  { row: 6, item: 'בניית קונספט', quantity: '4', price: '200,000', notes: 'פיתוח ומידול שיטות ייצור' },
+  { row: 7, item: 'ליווי ויועצים', quantity: '1', price: '80,000', notes: 'להקמת מפעל הייצור' },
+  { row: 8, item: 'הקמת מערכי שיווק', quantity: '1', price: '50,000', notes: 'מיתוג/משפכי שיווק/דיגיטציה' },
+  { row: 9, item: 'פרסום ושיווק', quantity: '7', price: '210,000', notes: 'יח"צ/דיגיטל/שיתופי פעולה' },
+  { row: 10, item: 'בלתי צפויים', quantity: '1', price: '200,000', notes: 'רזרבה' },
+  { row: 11, item: 'ניהול פרויקט הקמה', quantity: '6', price: '480,000', notes: '80,000₪ × 6 חודשים' },
 ]
 
 type SheetType = 'costs' | 'revenue' | 'investment'
@@ -201,8 +206,6 @@ export function ExcelView() {
                         key={row.row}
                         className={`
                           ${index % 2 === 0 ? 'bg-white' : 'bg-[#f8f9fa]'}
-                          ${row.highlight === 'error' ? 'bg-red-100' : ''}
-                          ${row.highlight === 'warning' ? 'bg-yellow-50' : ''}
                           hover:bg-blue-50 transition-colors
                         `}
                       >
@@ -215,13 +218,8 @@ export function ExcelView() {
                           {row.quantity} {row.unit}
                         </td>
                         <td className="border border-gray-200 p-2 text-center font-mono">{row.pricePerUnit} ₪</td>
-                        <td className={`border border-gray-200 p-2 text-center font-mono font-bold ${
-                          row.highlight === 'error' ? 'text-red-600' : ''
-                        }`}>
+                        <td className="border border-gray-200 p-2 text-center font-mono font-bold">
                           {row.total} ₪
-                          {row.highlight === 'error' && (
-                            <span className="block text-xs text-red-500">⚠️ שגיאה!</span>
-                          )}
                         </td>
                         <td className="border border-gray-200 p-2 text-sm text-gray-600">{row.notes}</td>
                       </tr>
@@ -262,8 +260,8 @@ export function ExcelView() {
                     <tr className="bg-[#70AD47] text-white">
                       <td className="w-10 bg-[#f0f0f0] border border-gray-300 p-1 text-center text-gray-500 text-xs">1</td>
                       <td className="border border-[#507e32] p-2 font-bold">תקופה</td>
-                      <td className="border border-[#507e32] p-2 font-bold text-center">יחידות</td>
-                      <td className="border border-[#507e32] p-2 font-bold text-center">מחיר ליח&apos;</td>
+                      <td className="border border-[#507e32] p-2 font-bold text-center">מ&quot;ר שנתי</td>
+                      <td className="border border-[#507e32] p-2 font-bold text-center">מחיר למ&quot;ר</td>
                       <td className="border border-[#507e32] p-2 font-bold text-center">הכנסות</td>
                       <td className="border border-[#507e32] p-2 font-bold text-center">עלויות</td>
                       <td className="border border-[#507e32] p-2 font-bold text-center">רווח נקי</td>
@@ -279,8 +277,8 @@ export function ExcelView() {
                           {row.row + 1}
                         </td>
                         <td className="border border-gray-200 p-2 font-semibold">{row.year}</td>
-                        <td className="border border-gray-200 p-2 text-center font-mono">{row.units}</td>
-                        <td className="border border-gray-200 p-2 text-center font-mono">{row.pricePerUnit} ₪</td>
+                        <td className="border border-gray-200 p-2 text-center font-mono">{row.sqm}</td>
+                        <td className="border border-gray-200 p-2 text-center font-mono">{row.pricePerSqm} ₪</td>
                         <td className="border border-gray-200 p-2 text-center font-mono font-semibold text-blue-600">
                           {parseInt(row.revenue).toLocaleString()} ₪
                         </td>
@@ -299,7 +297,7 @@ export function ExcelView() {
                         סה&quot;כ רווח מצטבר (3 שנים)
                       </td>
                       <td className="border border-[#507e32] p-2 text-center font-mono text-lg">
-                        41,543,200 ₪
+                        41,530,500 ₪
                       </td>
                     </tr>
                   </tbody>
@@ -370,20 +368,18 @@ export function ExcelView() {
               <span>מוכן</span>
             </div>
             <div className="flex items-center gap-4">
-              <span>ממוצע: {activeSheet === 'costs' ? '4,134 ₪' : activeSheet === 'revenue' ? '13,847,733 ₪' : '500,000 ₪'}</span>
-              <span>סכום: {activeSheet === 'costs' ? `${totalUnitCost.toLocaleString()} ₪` : activeSheet === 'revenue' ? '41,543,200 ₪' : `${totalInvestment.toLocaleString()} ₪`}</span>
+              <span>ממוצע: {activeSheet === 'costs' ? '4,134 ₪' : activeSheet === 'revenue' ? '13,843,500 ₪' : '366,364 ₪'}</span>
+              <span>סכום: {activeSheet === 'costs' ? `${totalUnitCost.toLocaleString()} ₪` : activeSheet === 'revenue' ? '41,530,500 ₪' : `${totalInvestment.toLocaleString()} ₪`}</span>
             </div>
           </div>
 
           {/* Legend */}
           <div className="mt-6 flex flex-wrap gap-4 justify-center text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-100 border border-red-300 rounded"></div>
-              <span className="text-navy-600">שורה עם שגיאת חישוב</span>
+              <span className="text-navy-600">* עלות גלם למ&quot;ר לפי נתוני המייסדים: ~340₪</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-yellow-50 border border-yellow-300 rounded"></div>
-              <span className="text-navy-600">נתון שדורש בדיקה</span>
+              <span className="text-navy-600">* סה&quot;כ השקעת הקמה: 4,030,000₪</span>
             </div>
           </div>
         </div>
